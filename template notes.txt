@@ -1,0 +1,51 @@
+  {
+    no: 1,
+    type: 'M',
+    topic: '',
+    question: 'What is the blah blah blah',
+    choices: { a: 'AHHAHAA', b: 'HAHAHAAH', c: 'AHAHHAHA', d: 'HAHAAHAAH' },
+    answer: 'b',
+    explanation: 'This is the explanation for the correct answer.'
+  },
+  {
+    no: 2,
+    type: 'MWI',
+    topic: '',
+    question: {
+      image: '../images/CCNA/Question_1.png',
+      question: 'Refer to the exhibit. Which type of route does R1 use to reach host 10.10.13.10/32?'
+    },
+    choices: {
+      a: 'default route',
+      b: 'network route',
+      c: 'host route',
+      d: 'floating static route'
+    },
+    answer: 'c',
+    explanation: 'The host route is the most specific route matching /32.'
+  },
+  
+  {
+    no: 3,
+    type: 'DAD',
+    topic: '',
+    question: {
+      question: ''
+      image: '../images/CCNA/Question_2.png',
+      question: 'Drag and drop the descriptions of file-transfer protocols from the left onto the correct protocols on the right.'
+    },
+    answer: '../images/CCNA/Answer_2.png',
+    explanation: 'This image illustrates the correct drag-and-drop matching.'
+  },  {
+    no: 1,
+    type: 'M',
+    topic: '',
+    question: 'What is the blah blah blah',
+    choices: { a: 'AHHAHAA', b: 'HAHAHAAH', c: 'AHAHHAHA', d: 'HAHAAHAAH' },
+    answer: '['b', 'c']',
+    explanation: 'This is the explanation for the correct answer.'
+  },
+
+  Can you use the format above to the following questions below:
+
+  

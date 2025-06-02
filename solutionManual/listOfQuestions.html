@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>eLearning</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-adsense-account" content="ca-pub-4839649705386416">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../asset/css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4839649705386416"
+        crossorigin="anonymous"></script>
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.15.2/katex.min.css">
+
+    <!-- KaTeX JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.15.2/katex.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.15.2/contrib/auto-render.min.js"></script>
+
+    <style>
+        html,
+        body,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            font-family: "Raleway", sans-serif
+        }
+
+        .bgclr-darkblue {
+            background-color: red;
+            color: white;
+        }
+
+        .mrt-20 {
+            margin-top: 20px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .con-hover:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+
+<body class="w3-light-grey">
+
+    <!-- Top container -->
+    <div id="header-container">
+        <script src="../asset/js/header.js"></script>
+        <script>
+          document.getElementById('header-container').innerHTML = eLearningHeader();
+      </script>
+    </div>
+
+    <!-- Sidebar/menu -->
+    <nav class="w3-sidebar w3-collapse w3-white w3-animate-left" style="z-index:3;width:300px;" id="mySidebar"><br>
+        <div class="w3-container w3-row">
+            <div class="w3-col s4">
+                <img src="" class="w3-circle w3-margin-right" style="width:46px">
+            </div>
+            <div class="w3-col s8 w3-bar">
+                <span><strong>eLearning</strong></span><br>
+            </div>
+        </div>
+        <hr>
+        <div class="w3-container">
+            <h5>Differential Equation</h5>
+        </div>
+        <div class="w3-bar-block">
+            <a href="#" class="w3-bar-item w3-button w3-padding-16 w3-hide-large w3-dark-grey w3-hover-black"
+                onclick="w3_close()" title="close menu"><i class="fa fa-remove fa-fw"></i>  Close Menu</a>
+            <a href="#" class="w3-bar-item w3-button w3-padding w3-blue"><img src="" class="notepadIcon">  Subjects</a>
+            <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-bell fa-fw"></i>  Updates</a>
+            <link href='https://unpkg.com/boxicons@2.1.4/dist/boxicons.js' rel='stylesheet'>
+        </div>
+    </nav>
+
+
+    <!-- Overlay effect when opening sidebar on small screens -->
+    <div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer"
+        title="close side menu" id="myOverlay"></div>
+
+    <!-- !PAGE CONTENT! -->
+    <div class="w3-main" style="margin-left:300px;margin-top:43px;">
+
+        <!-- Header -->
+        <header class="w3-container" style="padding-top:22px">
+            <h5 style="font-size: 30px; text-align:center;">
+                <b id="subject-title">
+                    Differental Equation
+                </b>
+            </h5>
+        </header>
+        <!-- Overview about the Subject-->
+        <header class="w3-container" style="padding-top:22px">
+            <h5>
+                <b>
+                    <img src="" class="notepadIcon">
+                      <span id="section-title"></span>
+                </b>
+            </h5>
+        </header>
+        <style>
+            .grid-template-3 {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                column-gap: 1rem;
+
+            }
+
+            /* Medium screens: 2 columns */
+            @media (max-width: 900px) {
+                .grid-template-3 {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+            }
+
+            /* Small screens: 1 column */
+            @media (max-width: 600px) {
+                .grid-template-3 {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .eq-list {
+                margin: 0 1rem;
+            }
+
+            .eq-list .w3-quarter {
+                width: 100%;
+            }
+        </style>
+        <div class="grid-template-3 eq-list" id="equation-list">
+        </div>
+
+        <hr>
+        <br>
+        <!-- Footer -->
+        <footer class="w3-container w3-padding-16 w3-light-grey">
+            <h4>FOOTER</h4>
+            <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+        </footer>
+
+        <!-- End page content -->
+    </div>
+    <script src="../asset/js/homeSidebar.js"></script>
+
+    <script src="../asset/js/solutionManualList.js"></script>
+
+    <script type="module">
+        import { solEqManual } from '../asset/js/functions.js';
+        // Get URL parameters
+        const params = new URLSearchParams(window.location.search);
+
+        // Get the value of 'subject'
+        const code = params.get('subject');
+
+        // Find the subject in solutionManual
+        const subjectInfo = solutionManual.find(s => s.code === code);
+
+        if (subjectInfo) {
+            document.getElementById('subject-title').innerText = `${subjectInfo.title}`;
+
+            const topic = params.get('topic');
+
+            // Now search inside listOfLecture
+            const sectionInfo = subjectInfo.listOfLecture.find(lecture => lecture.code === topic);
+
+            console.log(sectionInfo);
+            if (sectionInfo) {
+                document.getElementById('section-title').innerText = `${sectionInfo.title}`;
+                solEqManual(sectionInfo.listOfProblems, 'equation-list');
+            } else {
+                // Redirect if section not found
+                window.location.href = '../index.html';
+            }
+        } else {
+            // Redirect if subject not found
+            window.location.href = '../index.html';
+        }
+        document.querySelectorAll('.eq-math').forEach(el => {
+            const latex = el.getAttribute('data-latex');
+            katex.render(latex, el, {
+                throwOnError: false
+            });
+        });
+
+
+    </script>
+
+    <script>
+        // Get the Sidebar
+        var mySidebar = document.getElementById("mySidebar");
+
+        // Get the DIV with overlay effect
+        var overlayBg = document.getElementById("myOverlay");
+
+        // Toggle between showing and hiding the sidebar, and add overlay effect
+        function w3_open() {
+            if (mySidebar.style.display === 'block') {
+                mySidebar.style.display = 'none';
+                overlayBg.style.display = "none";
+            } else {
+                mySidebar.style.display = 'block';
+                overlayBg.style.display = "block";
+            }
+        }
+
+        // Close the sidebar with the close button
+        function w3_close() {
+            mySidebar.style.display = "none";
+            overlayBg.style.display = "none";
+        }
+        //Displaying icon 
+
+        var notepadIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAQNJREFUSEvtloENgkAMRcsmuoluopOok+gmugluov6kRw44S0t7IUSbkBhp+vp7P0cbWiiahbhkAZ+5yQcR4clj9/kPDyLliZos4BdXuhSKA3bi96qaqiQuWB284e4PAef/5GPBlPC7i5LilogAjwxAtxIYBrlHErNa+9yUQ8U5GF32xjOzoeR2NbiX6ICmCa4HDKNdjYrhYlwy+dGZFc8xXIK4welW0go/sjFdYC2slLdOsGQunKUULsWSuaY+Mm7wN3NVVfx75vortkzA5WoLaJirBuOywOpTI7D6dItF6QLIV9WoBm5EhA+HuOzhJZRjTBFLH6CjFWrqyotSPKqzGPgNNkJkH7l9jyAAAAAASUVORK5CYII=";
+
+        //document.getElementById("notepadIcon").src = notepadIcon;
+        // Select all elements with the class 'notepadIcon'
+        var icons = document.querySelectorAll('.notepadIcon');
+
+        // Loop through each element and change the src attribute
+        icons.forEach(icon => {
+            icon.src = notepadIcon;
+        });
+
+        function tab() {
+            return "&emsp;";
+        }
+        window.onload = tab;
+        var tab = "&emsp;";
+    </script>
+</body>
+
+</html>

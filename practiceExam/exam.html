@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Exam | eLearning</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link rel="icon" type="image/jpeg" href="../images/logo.jpeg">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2193b0',
+                        secondary: '#6dd5a7'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html,
+        body,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            font-family: "Raleway", sans-serif
+        }
+
+        .answer-box {
+            display: none;
+        }
+
+        .answer-box.incorrect {
+            background-color: #fef2f2 !important;
+            color: #b91c1c !important;
+        }
+
+        @media (max-width: 600px) {
+            .question-card {
+                padding: 1rem !important;
+            }
+        }
+
+        .sidebar-exam {
+            width: 250px;
+            background: #fff;
+            border-right: 1.5px solid #e5e7eb;
+            min-height: 100vh;
+            position: fixed;
+            top: 4rem;
+            left: 0;
+            z-index: 20;
+            padding-top: 0;
+            transition: width 0.3s;
+        }
+
+        .sidebar-exam .exam-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #2193b0;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .sidebar-exam .divider {
+            border-bottom: 2px solid #e5e7eb;
+            margin: 0.5rem 0 1rem 0;
+        }
+
+        .sidebar-exam .topic-list {
+            padding: 0;
+        }
+
+        .sidebar-text{
+            font-size: 0.8rem;
+        }
+        .sidebar-exam .topic-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0.5rem 1rem;
+            margin-bottom: 0.25rem;
+            border-radius: 6px;
+            background: #f0f8fa;
+            color: #2193b0;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .sidebar-collapsed {
+            width: 70px;
+        }
+
+        .closed-sidebar{
+            display: none; 
+        }
+        .sidebar-expanded{
+            display: block;
+            width: 250px;
+        }
+        .sidebar-exam .topic-btn.active,
+        .sidebar-exam .topic-btn:hover {
+            background: #2193b0;
+            color: #fff;
+        }
+
+        @media (min-width: 901px){
+            .sidebar-exam {
+                display: block;
+            }
+        }
+
+        #main-content {
+            margin-left: 250px;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 750px) {
+            #main-content {
+                margin-left: 0;
+                margin-top: 4rem;
+            }
+        }
+
+        .logo {
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 1rem;
+        }
+    </style>
+    <!-- Add nav.js import -->
+    <script type="module">
+        import { renderNav } from '../asset/js/nav.js';
+        renderNav();
+    </script>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <!-- Custom Sidebar for Exam -->
+    <aside id="exam-sidebar" class="sidebar-exam shadow">
+        <div class="exam-title" id="sidebar-subject-title">Practice Exam</div>
+        <div class="divider"></div>
+        <div class="font-semibold text-gray-700 text-sm px-4 mb-2"></div>
+        <div class="topic-list" id="topicLinks">
+            <!-- Topics will be rendered here -->
+        </div>
+    </aside>
+    <main id="main-content" class="main-content flex-1 p-6">
+        <div class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-primary mb-2" id="subject-title">Practice Exam</h1>
+            <p class="text-gray-600 text-lg">Read each question carefully and select the best answer. Click "Check Answer" to see if you are correct.</p>
+        </div>
+        <div id="exam-warning" class="mb-4 text-red-700 font-semibold"></div>
+        <div id="exam-pagination" class="max-w-2xl mx-auto"></div>
+        <div id="quiz-container" class="max-w-3xl mx-auto"></div>
+    </main>
+    <script id="sidebar-controller">
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.getElementById('exam-sidebar'); // <-- FIXED ID
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const mainContent = document.getElementById('main-content');
+            const sidebarText = document.querySelectorAll('.sidebar-text');
+            function toggleSidebar() {
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    sidebar.classList.toggle('open');
+                    sidebar.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
+                } else {
+                    sidebar.classList.toggle('sidebar-collapsed');
+                    sidebar.classList.toggle('sidebar-expanded');
+                    if (sidebar.classList.contains('sidebar-collapsed')) {
+                        sidebarText.forEach(text => text.style.display = 'none');
+                        mainContent.style.marginLeft = '70px';
+                    } else {
+                        sidebarText.forEach(text => text.style.display = 'block');
+                        mainContent.style.marginLeft = '250px';
+                    }
+                }
+            }
+            if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
+            // Handle window resize
+            window.addEventListener('resize', function () {
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    sidebar.classList.remove('sidebar-collapsed', 'sidebar-expanded');
+                    sidebar.classList.remove('open');
+                    sidebar.style.display = 'none';
+                    mainContent.style.marginLeft = '0';
+                } else {
+                    sidebar.classList.remove('open');
+                    if (sidebar.classList.contains('sidebar-collapsed')) {
+                        sidebarText.forEach(text => text.style.display = 'none');
+                        mainContent.style.marginLeft = '70px';
+                    } else {
+                        sidebar.classList.add('sidebar-expanded');
+                        sidebar.style.display = 'block';
+                        sidebarText.forEach(text => text.style.display = 'block');
+                        mainContent.style.marginLeft = '250px';
+                    }
+                }
+            });
+        });
+    </script>
+    <script>
+        // Get URL parameters
+        const params = new URLSearchParams(window.location.search);
+        const examCode = params.get('exam');
+        let topicIdx = params.get('topic') ? parseInt(params.get('topic')) : 0;
+
+        // Helper: Capitalize
+        function capitalize(str) {
+            return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
+        }
+
+        // Dynamically load the exam questions script
+        if (examCode) {
+            const script = document.createElement('script');
+            script.src = `../asset/js/${examCode}.js`;
+            script.onload = function () {
+                if (window.practiceExamQuestions && Array.isArray(window.practiceExamQuestions)) {
+                    // Collect topics and store globally
+                    window.topics = getTopics(window.practiceExamQuestions);
+
+                    // Render sidebar exam name
+                    document.getElementById('exam-title').textContent =
+                        window.practiceExamName ? window.practiceExamName : capitalize(examCode.replace(/_/g, ' '));
+                    // Render topics
+                    renderTopics(window.practiceExamQuestions);
+                    // Render questions for selected topic
+                    renderExamQuestions(getQuestionsByTopic(window.practiceExamQuestions, topicIdx));
+                } else {
+                }
+            };
+            script.onerror = function () {
+            };
+            document.body.appendChild(script);
+        } else {
+        }
+
+        // Get unique topics from questions
+        function getTopics(questions) {
+            const topics = [];
+            questions.forEach((q, idx) => {
+                let topic = q.topic || `Topic ${q.topicIndex ?? idx}`;
+                let topicIndex = q.topicIndex ?? idx;
+                if (!topics.some(t => t.topicIndex === topicIndex)) {
+                    topics.push({ topic, topicIndex });
+                }
+            });
+            return topics;
+        }
+
+        // Filter questions by topic index
+        function getQuestionsByTopic(questions, topicIndex) {
+            if (questions.some(q => q.topicIndex !== undefined)) {
+                return questions.filter(q => q.topicIndex == topicIndex);
+            } else if (questions.some(q => q.topic !== undefined)) {
+                // fallback: group by topic string
+                const topicName = getTopics(questions)[topicIndex]?.topic;
+                return questions.filter(q => q.topic == topicName);
+            }
+            return questions;
+        }
+
+        // Render topics in sidebar
+        function renderTopics(questions) {
+            const topics = getTopics(questions);
+            const topicList = document.getElementById('topic-list');
+            topicList.innerHTML = topics.map((t, idx) => `
+                <button class="topic-btn${idx === topicIdx ? ' active' : ''}" data-idx="${t.topicIndex}">${t.topic}</button>
+            `).join('');
+            topicList.querySelectorAll('.topic-btn').forEach(btn => {
+                btn.onclick = function () {
+                    topicIdx = parseInt(this.getAttribute('data-idx'));
+                    // Update URL without reload
+                    const url = new URL(window.location);
+                    url.searchParams.set('topic', topicIdx);
+                    window.history.replaceState({}, '', url);
+                    // Update active state
+                    topicList.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    // Render questions for this topic
+                    renderExamQuestions(getQuestionsByTopic(window.practiceExamQuestions, topicIdx));
+                };
+            });
+        }
+
+        // Render questions for the selected topic
+        function renderExamQuestions(questions) {
+            let current = 0;
+            function render() {
+                if (!questions.length) {
+                    document.getElementById('exam-questions').innerHTML = '<div class="text-red-600 font-semibold">No questions found for this topic.</div>';
+                    document.getElementById('exam-pagination').innerHTML = '';
+                    return;
+                }
+                const q = questions[current];
+                const container = document.getElementById('exam-questions');
+                container.innerHTML = `
+                    <div class="question-card bg-white shadow-lg rounded-2xl p-8 mb-8 border-l-8 ${current % 2 === 0 ? 'border-primary' : 'border-secondary'} transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-2">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary font-bold text-xs">
+                                    <i class="ri-question-line mr-1"></i> Q${current + 1}
+                                </span>
+                                <span class="text-xs text-gray-500 ml-2">of ${questions.length}</span>
+                            </div>
+                            <span class="question-topic text-secondary font-semibold text-sm">${q.topic || ''}</span>
+                        </div>
+                        <div class="question-text text-lg font-semibold text-gray-800 mb-6">${q.question}</div>
+                        <div class="choices flex flex-col gap-3">
+                            ${q.choices.map((c, i) => `
+                                <div class="choice px-5 py-3 rounded-lg bg-gray-50 border border-gray-200 cursor-pointer transition
+                                    hover:bg-primary/10 hover:border-primary font-medium text-gray-700 text-base shadow-sm"
+                                    data-idx="${i}">
+                                    ${c}
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button class="check-answer-btn mt-6 px-6 py-2 rounded-lg bg-primary text-white font-bold shadow hover:bg-secondary transition-all">Check Answer</button>
+                        <div class="answer-box mt-4 p-4 rounded-lg bg-green-50 text-green-700 font-semibold flex items-center gap-2" style="display:none"></div>
+                    </div>
+                `;
+                let selected = null;
+                container.querySelectorAll('.choice').forEach(choice => {
+                    choice.addEventListener('click', function () {
+                        container.querySelectorAll('.choice').forEach(c => c.classList.remove('selected'));
+                        this.classList.add('selected');
+                        selected = parseInt(this.getAttribute('data-idx'));
+                    });
+                });
+                container.querySelector('.check-answer-btn').onclick = function () {
+                    if (selected === null) return;
+                    const answerBox = container.querySelector('.answer-box');
+                    answerBox.style.display = 'flex';
+                    container.querySelectorAll('.choice').forEach((c, i) => {
+                        c.classList.remove('bg-green-100', 'bg-red-100', 'border-green-400', 'border-red-400', 'text-green-700', 'text-red-700');
+                        if (i === q.answer) c.classList.add('bg-green-100', 'border-green-400', 'text-green-700');
+                        if (i === selected && selected !== q.answer) c.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
+                    });
+                    answerBox.classList.remove('bg-green-50', 'bg-red-50', 'text-green-700', 'text-red-700');
+                    if (selected === q.answer) {
+                        answerBox.innerHTML = `<i class="ri-checkbox-circle-line text-xl text-green-600"></i> Correct! ${q.explanation || ""}`;
+                        answerBox.classList.add('bg-green-50', 'text-green-700');
+                    } else {
+                        answerBox.innerHTML = `<i class="ri-close-circle-line text-xl text-red-600"></i> Incorrect. ${q.explanation || ""}`;
+                        answerBox.classList.add('bg-red-50', 'text-red-700');
+                    }
+                };
+                renderPagination();
+            }
+            function renderPagination() {
+                const pag = document.getElementById('exam-pagination');
+                pag.innerHTML = `
+                    <div class="pagination flex items-center justify-between mt-6">
+                        <button class="px-4 py-2 rounded-lg bg-primary text-white font-semibold shadow hover:bg-secondary hover:text-gray-900 transition ${current === 0 ? 'opacity-50 cursor-not-allowed' : ''}" id="prev-btn" ${current === 0 ? 'disabled' : ''}>&laquo; Previous</button>
+                        <span class="text-gray-700 font-medium">Question ${current + 1} of ${questions.length}</span>
+                        <button class="px-4 py-2 rounded-lg bg-primary text-white font-semibold shadow hover:bg-secondary hover:text-gray-900 transition ${current === questions.length - 1 ? 'opacity-50 cursor-not-allowed' : ''}" id="next-btn" ${current === questions.length - 1 ? 'disabled' : ''}>Next &raquo;</button>
+                    </div>
+                `;
+                pag.querySelector('#prev-btn').onclick = function () {
+                    if (current > 0) { current--; render(); }
+                };
+                pag.querySelector('#next-btn').onclick = function () {
+                    if (current < questions.length - 1) { current++; render(); }
+                };
+            }
+            render();
+        }
+    </script>
+</body>
+
+</html>

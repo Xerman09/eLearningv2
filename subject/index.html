@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Subject Lectures | eLearning</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link rel="icon" type="image/jpeg" href="../images/logo.jpeg">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2193b0',
+                        secondary: '#6dd5a7'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .logo {
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 1rem;
+        }
+        .sidebar {
+            transition: width 0.3s ease;
+        }
+        .sidebar-collapsed {
+            width: 70px;
+        }
+        .sidebar-expanded {
+            width: 250px;
+        }
+        .main-content {
+            transition: margin-left 0.3s ease;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 40;
+                height: 100%;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0 !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <!-- Inject Navigation Bar and Sidebar -->
+    <script type="module">
+        import { renderLayout } from '../asset/js/layout.js';
+        renderLayout();
+    </script>
+
+    <div class="flex pt-16 relative">
+        <main id="main-content" class="main-content flex-1 ml-[250px] p-6">
+            <div class="mb-8">
+                <h1 id="subject-title" class="text-2xl font-bold text-gray-800">Subject Title</h1>
+                <p id="subject-overview" class="text-gray-600 mt-1"></p>
+            </div>
+            <div class="bg-white rounded shadow-sm p-6 mb-8">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
+                    <div class="flex items-center gap-2">
+                        <h2 id="table-header-title" class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                            <i class="ri-book-2-line text-primary"></i> Lectures
+                        </h2>
+                    </div>
+                    <!-- Search Bar -->
+                    <div class="w-full md:w-72">
+                        <input
+                            type="text"
+                            id="lecture-search"
+                            placeholder="Search lectures..."
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                        />
+                    </div>
+                </div>
+                <div id="lecture-list" class="grid grid-cols-1 gap-6">
+                    <!-- Lecture cards will be rendered here -->
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- Sidebar controller script should remain for sidebar toggle functionality -->
+    <script id="sidebar-controller">
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const mainContent = document.getElementById('main-content');
+            const sidebarText = document.querySelectorAll('.sidebar-text');
+            function toggleSidebar() {
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    sidebar.classList.toggle('open');
+                } else {
+                    sidebar.classList.toggle('sidebar-collapsed');
+                    sidebar.classList.toggle('sidebar-expanded');
+                    if (sidebar.classList.contains('sidebar-collapsed')) {
+                        sidebarText.forEach(text => text.style.display = 'none');
+                        mainContent.style.marginLeft = '70px';
+                    } else {
+                        sidebarText.forEach(text => text.style.display = 'block');
+                        mainContent.style.marginLeft = '250px';
+                    }
+                }
+            }
+            sidebarToggle.addEventListener('click', toggleSidebar);
+            // Handle window resize
+            window.addEventListener('resize', function () {
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    sidebar.classList.remove('sidebar-collapsed', 'sidebar-expanded');
+                    sidebar.classList.remove('open');
+                    mainContent.style.marginLeft = '0';
+                } else {
+                    sidebar.classList.remove('open');
+                    if (sidebar.classList.contains('sidebar-collapsed')) {
+                        sidebarText.forEach(text => text.style.display = 'none');
+                        mainContent.style.marginLeft = '70px';
+                    } else {
+                        sidebar.classList.add('sidebar-expanded');
+                        sidebarText.forEach(text => text.style.display = 'block');
+                        mainContent.style.marginLeft = '250px';
+                    }
+                }
+            });
+        });
+    </script>
+    <script src="../asset/js/subjectList.js"></script>
+    <script>
+        // Get URL parameters
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get('subject');
+        const subjectInfo = subjectList.find(s => s.code === code);
+
+        if (subjectInfo) {
+            document.getElementById('subject-title').innerText = subjectInfo.subjectTitle || subjectInfo.title || 'Subject';
+            document.getElementById('subject-overview').innerHTML = subjectInfo.description || '';
+            document.getElementById('table-header-title').innerHTML = `<i class="ri-book-2-line text-primary"></i> ${subjectInfo.tableHeaderTitle || 'Lecture'}`;
+
+            const lectureList = document.getElementById('lecture-list');
+            lectureList.innerHTML = '';
+
+            // Modern, visually appealing row display using 100% width for each card
+            const row = document.createElement('div');
+            row.className = "flex flex-col gap-4 w-full";
+
+            // Responsive: stack on mobile, row on desktop
+            row.classList.add("md:flex-row", "md:flex-wrap");
+
+            (subjectInfo.listOfLecture || []).forEach((lecture, idx) => {
+                const isPrimary = idx % 2 === 0;
+                const bgColor = isPrimary ? 'bg-gradient-to-r from-primary/10 to-white' : 'bg-gradient-to-r from-secondary/10 to-white';
+                const borderColor = isPrimary ? 'border-primary' : 'border-secondary';
+                const subjectTextColor = isPrimary ? 'text-primary' : 'text-secondary';
+
+                const card = document.createElement('div');
+                card.className = `
+                    flex items-center justify-between
+                    w-full
+                    px-6 py-4
+                    rounded-xl
+                    ${bgColor}
+                    shadow
+                    hover:shadow-lg
+                    hover:scale-[1.02]
+                    transition
+                    cursor-pointer
+                    border-l-4
+                    ${borderColor}
+                    group
+                `.replace(/\s+/g, ' ');
+                card.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center bg-white shadow group-hover:bg-primary/20 transition">
+                            <i class="ri-book-2-line text-2xl ${subjectTextColor}"></i>
+                        </div>
+                        <span class="${subjectTextColor} font-bold text-base drop-shadow-sm">Lecture ${lecture.lectureNo}</span>
+                        <span class="ml-2 font-normal text-gray-700 text-base">${lecture.lectureTitle}</span>
+                    </div>
+                    <button class="ml-4 px-4 py-2 rounded-lg bg-primary text-white text-xs font-semibold shadow hover:bg-secondary hover:text-gray-900 transition">
+                        <i class="ri-eye-line mr-1"></i> View
+                    </button>
+                `;
+                // Make the whole card clickable if lecture.link exists
+                if (lecture.link) {
+                    card.addEventListener('click', (e) => {
+                        if (e.target.tagName.toLowerCase() === 'button') {
+                            window.location.href = lecture.link;
+                        } else {
+                            window.location.href = lecture.link;
+                        }
+                    });
+                    card.querySelector('button').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        window.location.href = lecture.link;
+                    });
+                }
+                row.appendChild(card);
+            });
+            lectureList.appendChild(row);
+
+            // Search functionality
+            document.getElementById('lecture-search').addEventListener('input', function () {
+                const query = this.value.toLowerCase();
+                row.querySelectorAll('div').forEach(card => {
+                    // Only search in the lecture number and title, not the button
+                    const textContent = card.querySelector('span.font-bold')?.textContent + ' ' +
+                                        card.querySelector('span.font-normal')?.textContent;
+                    card.style.display = textContent && textContent.toLowerCase().includes(query) ? '' : 'none';
+                });
+            });
+        } else {
+            // Redirect if not found
+            // window.location.href = '../index.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eLearning Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2193b0',
+                        secondary: '#6dd5a7'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="icon" type="image/jpeg" href="./images/logo.jpeg">
+    <style>
+        :where([class^="ri-"])::before {
+            content: "\f3c2";
+        }
+
+        .sidebar {
+            transition: width 0.3s ease;
+        }
+
+        .sidebar-collapsed {
+            width: 70px;
+        }
+
+        .sidebar-expanded {
+            width: 250px;
+        }
+
+        .main-content {
+            transition: margin-left 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 40;
+                height: 100%;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0 !important;
+            }
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .custom-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .custom-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .switch-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e5e7eb;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .switch-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.switch-slider {
+            background-color: #4f46e5;
+        }
+
+        input:checked+.switch-slider:before {
+            transform: translateX(20px);
+        }
+
+        .logo {
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 1rem;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <!-- Inject Navigation Bar and Sidebar -->
+    <script type="module">
+        import { renderLayout } from './asset/js/layout.js';
+        renderLayout();
+    </script>
+
+    <!-- Main Content -->
+    <div class="flex pt-16 relative">
+        <main id="main-content" class="main-content flex-1 ml-[250px] p-6">
+            <!-- Welcome Section -->
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold text-gray-800">Welcome back to eLearning</h1>
+                <p class="text-gray-600 mt-1">"Education is not preparation for life; education is life itself." - John Dewey
+                </p>
+            </div>
+            <!-- What's New Section -->
+            <div class="bg-white rounded shadow-sm p-6 mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-bold text-gray-800">What's New</h2>
+                    <span class="text-xs bg-primary bg-opacity-10 text-primary py-1 px-2 rounded-full">Last 7
+                        days</span>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4 pb-4 border-b border-gray-100">
+                        <div class="w-8 h-8 rounded-full bg-cyan-100 flex items-center justify-center flex-shrink-0">
+                            <i class="ri-video-line text-primary"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-medium text-gray-800">New Lecture: Advanced Calculus</h3>
+                            <p class="text-xs text-gray-500 mt-1">Added 2 days ago</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 pb-4 border-b border-gray-100">
+                        <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                            <i class="ri-file-list-3-line text-secondary"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-medium text-gray-800">Updated: Differential Equations Solutions</h3>
+                            <p class="text-xs text-gray-500 mt-1">Updated 3 days ago</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center flex-shrink-0">
+                            <i class="ri-file-text-line text-teal-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-medium text-gray-800">New Practice Exam Available</h3>
+                            <p class="text-xs text-gray-500 mt-1">Added 5 days ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Main Content Sections -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Subjects Section -->
+                <div class="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                                <i class="ri-book-2-line text-primary"></i> Subjects
+                            </h2>
+                            <a href="lectures.html" class="text-primary text-sm font-medium hover:underline">View All</a>
+                        </div>
+                        <script type="module" src="subjectRender.js"></script>
+                        <div id="render-subjects" class="grid gap-4">
+                            <!-- Subject cards will be rendered here by subjectRender.js -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Solution Manual Section -->
+                <div class="bg-gradient-to-br from-green-100 to-green-50 rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                                <i class="ri-file-list-3-line text-green-600"></i> Solution Manual
+                            </h2>
+                            <a href="#" class="text-primary text-sm font-medium hover:underline">View All</a>
+                        </div>
+                        <script type="module" src="solutionManual.js"></script>
+                        <div id="render-sol-manual" class="grid gap-4">
+                            <!-- Solution manual cards will be rendered here by solutionManual.js -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Practice Exam Section -->
+                <div class="bg-gradient-to-br from-amber-100 to-yellow-50 rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                                <i class="ri-file-text-line text-amber-600"></i> Practice Exam
+                            </h2>
+                            <a href="#" class="text-primary text-sm font-medium hover:underline">View All</a>
+                        </div>
+                        <script type="module" src="practiceExam.js"></script>
+                        <div id="render-practice-exam" class="grid gap-4">
+                            <!-- Practice exam cards will be rendered here by practiceExam.js -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- Sidebar controller script should remain for sidebar toggle functionality -->
+    <script id="sidebar-controller">
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const mainContent = document.getElementById('main-content');
+            const sidebarText = document.querySelectorAll('.sidebar-text');
+            function toggleSidebar() {
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    sidebar.classList.toggle('open');
+                } else {
+                    sidebar.classList.toggle('sidebar-collapsed');
+                    sidebar.classList.toggle('sidebar-expanded');
+                    if (sidebar.classList.contains('sidebar-collapsed')) {
+                        sidebarText.forEach(text => text.style.display = 'none');
+                        mainContent.style.marginLeft = '70px';
+                    } else {
+                        sidebarText.forEach(text => text.style.display = 'block');
+                        mainContent.style.marginLeft = '250px';
+                    }
+                }
+            }
+            sidebarToggle.addEventListener('click', toggleSidebar);
+            // Handle window resize
+            window.addEventListener('resize', function () {
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    sidebar.classList.remove('sidebar-collapsed', 'sidebar-expanded');
+                    sidebar.classList.remove('open');
+                    mainContent.style.marginLeft = '0';
+                } else {
+                    sidebar.classList.remove('open');
+                    if (sidebar.classList.contains('sidebar-collapsed')) {
+                        sidebarText.forEach(text => text.style.display = 'none');
+                        mainContent.style.marginLeft = '70px';
+                    } else {
+                        sidebar.classList.add('sidebar-expanded');
+                        sidebarText.forEach(text => text.style.display = 'block');
+                        mainContent.style.marginLeft = '250px';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

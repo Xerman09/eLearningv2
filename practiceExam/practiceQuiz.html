@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Quiz | eLearning</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link rel="icon" type="image/jpeg" href="../images/logo.jpeg">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2193b0',
+                        secondary: '#6dd5a7'
+                    },
+                    borderRadius: {
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html,
+        body,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            font-family: "Raleway", sans-serif
+        }
+
+        .sidebar-exam {
+            width: 250px;
+            background: #fff;
+            border-right: 1.5px solid #e5e7eb;
+            min-height: 100vh;
+            position: fixed;
+            top: 4rem;
+            left: 0;
+            z-index: 20;
+            padding-top: 0;
+            transition: width 0.3s;
+        }
+
+        .sidebar-exam .exam-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #2193b0;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .sidebar-exam .divider {
+            border-bottom: 2px solid #e5e7eb;
+            margin: 0.5rem 0 1rem 0;
+        }
+
+        .sidebar-exam .topic-list {
+            padding: 0;
+        }
+
+        .sidebar-exam .topic-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0.5rem 1rem;
+            margin-bottom: 0.25rem;
+            border-radius: 6px;
+            background: #f0f8fa;
+            color: #2193b0;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .sidebar-exam .topic-btn.active,
+        .sidebar-exam .topic-btn:hover {
+            background: #2193b0;
+            color: #fff;
+        }
+
+        #main-content {
+            margin-left: 250px;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 750px) {
+            #main-content {
+                margin-left: 0;
+                margin-top: 4rem;
+            }
+        }
+
+        .flashcard {
+            background: #fff;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+            max-width: 42rem;
+            margin: 0 auto;
+            margin-bottom: 2rem;
+            border-left: 8px solid #2193b0;
+            transition: border-color 0.2s;
+        }
+
+        .flashcard.incorrect {
+            border-color: #e53e3e;
+        }
+
+        .flashcard.correct {
+            border-color: #22c55e;
+        }
+                .logo {
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 1rem;
+        }
+    </style>
+    <script type="module">
+        import { renderNav } from '../asset/js/nav.js';
+        renderNav();
+    </script>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <!-- Sidebar -->
+    <aside id="exam-sidebar" class="sidebar-exam shadow">
+        <div class="exam-title" id="sidebar-subject-title">Practice Exam</div>
+        <div class="divider"></div>
+        <div class="font-semibold text-gray-700 text-sm px-4 mb-2"></div>
+        <div class="topic-list" id="topicLinks">
+            <!-- Topics will be rendered here -->
+        </div>
+    </aside>
+    <main id="main-content" class="main-content flex-1 p-6">
+        <!-- Title and Instructions -->
+        <div class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-primary mb-2" id="subject-title">Practice Quiz</h1>
+            <div id="quiz-instruction" class="mb-8 text-center text-gray-600 text-lg">
+                        <p class="text-gray-600 text-lg">Select your topic and number of questions, then start your quiz. Each
+                question will be shown as a flashcard. Good luck!</p>
+            </div>
+
+        </div>
+        <!-- Phase 1: Quiz Setup -->
+        <div id="quiz-setup" class="max-w-lg mx-auto bg-white shadow rounded-xl p-8 mb-8">
+            <div class="text-xl font-bold text-primary mb-4 text-center">
+                Start Your Practice Quiz
+            </div>
+            <div class="mb-4">
+                <label class="block font-semibold mb-1" for="topic-select">Topic</label>
+                <select id="topic-select" class="w-full border px-3 py-2 rounded">
+                    <option value="all">All</option>
+                    <!-- More topics will be injected here -->
+                </select>
+            </div>
+            <div class="mb-4">
+                <label class="block font-semibold mb-1" for="num-questions">Number of Questions</label>
+                <input id="num-questions" type="number" min="1" max="50" value="5"
+                    class="w-full border px-3 py-2 rounded">
+            </div>
+            <button id="start-quiz-btn"
+                class="w-full bg-primary text-white font-bold py-2 rounded hover:bg-secondary transition">Start
+                Quiz</button>
+        </div>
+        <!-- Phase 2: Quiz Flashcard -->
+        <div id="quiz-flashcard" style="display:none;">
+            <!-- Flashcard content will be injected here -->
+        </div>
+        <!-- Phase 3: Summary -->
+        <div id="quiz-summary" style="display:none;">
+            <!-- Summary content will be injected here -->
+        </div>
+        <div class="choices flex flex-col gap-3 mb-4">
+            <!-- label/checkboxes here -->
+        </div>
+    </main>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const subject = params.get('subject');
+        // Dummy data for demonstration, replace with dynamic loading as needed
+        if (subject) {
+            const script = document.createElement('script');
+            script.src = `../asset/js/${subject}.js`;
+            document.body.appendChild(script);
+        }
+    </script>
+</body>
+
+</html>
