@@ -126,10 +126,23 @@
             color: #fff;
         }
 
-        @media (min-width: 901px){
-            .sidebar-exam {
-                display: block;
+        .topic, .questionNo{
+            font-size: 1.5rem;
+        }
+        .topic{
+            text-align: right;
+        }
+        @media (max-width: 800px){
+            .topic, .questionNo{
+                font-size: 1.25rem;
             }
+
+        }
+        @media (max-width: 901px){
+            .sidebar-exam {
+                display: none;
+            }
+            
         }
 
         #main-content {
@@ -149,6 +162,7 @@
             grid-template-columns: auto auto;
             gap: 1rem;
         }
+
     </style>
     <!-- Add nav.js import -->
     <script type="module">

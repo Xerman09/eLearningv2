@@ -124,6 +124,12 @@
             grid-template-columns: auto auto;
             gap: 1rem;
         }
+                @media (max-width: 901px){
+            .sidebar-exam {
+                display: none;
+            }
+        }
+
     </style>
     <script type="module">
         import { renderNav } from '../asset/js/nav.js';
@@ -184,6 +190,53 @@
             <!-- label/checkboxes here -->
         </div>
     </main>
+        <script id="sidebar-controller">
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.getElementById('exam-sidebar'); // <-- FIXED ID
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const mainContent = document.getElementById('main-content');
+            const sidebarText = document.querySelectorAll('.sidebar-text');
+            function toggleSidebar() {
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    sidebar.classList.toggle('open');
+                    sidebar.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
+                } else {
+                    sidebar.classList.toggle('sidebar-collapsed');
+                    sidebar.classList.toggle('sidebar-expanded');
+                    if (sidebar.classList.contains('sidebar-collapsed')) {
+                        sidebarText.forEach(text => text.style.display = 'none');
+                        mainContent.style.marginLeft = '70px';
+                    } else {
+                        sidebarText.forEach(text => text.style.display = 'block');
+                        mainContent.style.marginLeft = '250px';
+                    }
+                }
+            }
+            if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
+            // Handle window resize
+            window.addEventListener('resize', function () {
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    sidebar.classList.remove('sidebar-collapsed', 'sidebar-expanded');
+                    sidebar.classList.remove('open');
+                    sidebar.style.display = 'none';
+                    mainContent.style.marginLeft = '0';
+                } else {
+                    sidebar.classList.remove('open');
+                    if (sidebar.classList.contains('sidebar-collapsed')) {
+                        sidebarText.forEach(text => text.style.display = 'none');
+                        mainContent.style.marginLeft = '70px';
+                    } else {
+                        sidebar.classList.add('sidebar-expanded');
+                        sidebar.style.display = 'block';
+                        sidebarText.forEach(text => text.style.display = 'block');
+                        mainContent.style.marginLeft = '250px';
+                    }
+                }
+            });
+        });
+    </script>
     <script>
         const params = new URLSearchParams(window.location.search);
         const subject = params.get('subject');
