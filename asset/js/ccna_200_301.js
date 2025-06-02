@@ -1,9 +1,3 @@
-
-const listOfType = {
-  M: 'Multiple Choice',
-  MWI: "Multiple Choice With Image",
-  DAD: 'Drag and Drop'
-};
 document.getElementById('subject-title').innerText = 'CCNA 200 - 301';
 document.getElementById('sidebar-subject-title').innerText = 'CCNA 200 - 301';
 
@@ -21,205 +15,186 @@ const topics = {
   //7 : 'LOGICAL REASONING'
 }
 
+
 const sideBarContainer = document.getElementById("topicLinks"); // The container where links will be inserted
 
-Object.entries(topics).forEach(([key, value]) => {
-  const a = document.createElement("a");
-  a.href = `../library/practiceExam.html?page=1&subject=ccna_200_301&topic=${key}`;
-  a.id = `topic-${key}`;
-  a.className = `w3-bar-item w3-button w3-padding `;
-  a.innerHTML = `<img src="" class="notepadIcon">${value}`;
-  sideBarContainer.appendChild(a);
-});
+if (sideBarContainer) {
+    sideBarContainer.innerHTML = ""; // Clear previous content
 
+    // Group topics: whole numbers as main, decimals as children
+    const mainTopics = {};
+    Object.entries(topics).forEach(([key, value]) => {
+        const numKey = Number(key);
+        if (Number.isInteger(numKey)) {
+            mainTopics[key] = { label: value, children: [] };
+        }
+    });
+    Object.entries(topics).forEach(([key, value]) => {
+        const numKey = Number(key);
+        if (!Number.isInteger(numKey)) {
+            const parentKey = Math.floor(numKey);
+            if (mainTopics[parentKey]) {
+                mainTopics[parentKey].children.push({ key, label: value });
+            }
+        }
+    });
 
-const practiceTest = document.createElement("a");
-practiceTest.href = `../library/quiz.html?page=1&subject=ccna_200_301&topic=`;
-practiceTest.className = `w3-bar-item w3-button w3-padding topic-quiz`;
-practiceTest.innerHTML = `<img src="" class="notepadIcon">PRACTICE QUIZ (FLASHCARD)`;
-sideBarContainer.appendChild(practiceTest);
+    // Make sidebar scrollable
+    sideBarContainer.style.maxHeight = "calc(100vh - 2rem)";
+    sideBarContainer.style.overflowY = "auto";
 
-/*
-const questions = [
-  {
-    no: 1,
-    type: 'M',
-    topic: '',
-    question: 'Which of the following frames does a switch flood? (select two)',
-    choices: {
-      a: 'A frame destined for one host, with an entry in the ARP table.',
-      b: 'A frame with destination MAC FF:FF:FF:FF:FF:FF.',
-      c: 'A frame destined for one host, with an entry in the CAM table.',
-      d: 'A frame destined for one host, with no entry in the CAM table.',
-      e: 'A frame destined for one host, with no entry in the ARP table.'
-    },
-    answer: ['b', 'd'],
-    explanation: 'A switch floods frames with destination MAC FF:FF:FF:FF:FF:FF (broadcast) and frames destined for a host with no entry in the CAM table.'
-  },
-  {
-    no: 2,
-    type: 'M',
-    topic: '',
-    question: 'Which of the following IP addresses are in a range specified by RFC 1918? (select two)',
-    choices: {
-      a: '224.0.0.10',
-      b: '241.255.255.1',
-      c: '172.32.0.1',
-      d: '192.0.0.1',
-      e: '192.168.255.255',
-      f: '172.31.23.27'
-    },
-    answer: ['e', 'f'],
-    explanation: '192.168.255.255 and 172.31.23.27 are within the RFC 1918 private address ranges.'
-  },
-  {
-    no: 3,
-    type: 'MWI',
-    topic: '',
-    question: {
-      image: '../images/CCNA/Question_3.png',
-      question: 'Download the attached .pkt file and open it in Packet Tracer (version 8.2.0 or above required to open the file).<br><br>Which of the following statements are true? (select three)'
-    },
-    choices: {
-      a: "R4's G0/1 interface has an IP address of 10.0.0.2.",
-      b: "R3's G0/1 interface is connected to R4's G0/2 interface.",
-      c: "R5's G0/3/0 interface is connected to R3's G0/2/0 interface.",
-      d: "SW1's G0/2 interface is connected to R2's G0/1 interface.",
-      e: "R5's G0/1/0 interface is connected to R4's G0/0/0 interface.",
-      f: "R5's G0/2/0 interface has an IP address of 203.0.113.1."
-    },
-    answer: ['a', 'd', 'e'],
-    explanation: 'The correct answers are based on the Packet Tracer topology and interface assignments.'
-  },
-  {
-    no: 4,
-    type: 'M',
-    topic: '',
-    question: 'R1 learns the following routes via dynamic routing protocols:<br><br>192.168.0.0/25 via RIP, metric 4<br>192.168.0.0/30 via EIGRP, metric 1234<br>192.168.0.0/28 via OSPF, metric 10<br>192.168.0.0/16 via eBGP, metric 1<br>An admin also configured a static route to 192.0.0.0/8.<br><br>Which route(s) will R1 add to its routing table? (select all correct answers)',
-    choices: {
-      a: '192.168.0.0/25',
-      b: '192.168.0.0/30',
-      c: '192.168.0.0/28',
-      d: '192.168.0.0/16',
-      e: '192.0.0.0/8'
-    },
-    answer: ['a', 'b', 'c', 'd', 'e'],
-    explanation: 'All listed routes will be added to the routing table as they are the most specific or valid for their respective prefixes.'
-  },
-  {
-    no: 5,
-    type: 'MWI',
-    topic: '',
-    question: {
-      image: '../images/CCNA/Question_5.png',
-      question: 'Examine the below JSON-formatted data.<br><br>Which of the following statements is true?'
-    },
-    choices: {
-      a: 'A curly bracket is missing.',
-      b: 'A square bracket is missing.',
-      c: 'It is valid JSON data.',
-      d: 'The value of "version" is a string.'
-    },
-    answer: 'a',
-    explanation: 'A curly bracket is missing in the provided JSON data.'
-  },
-  {
-    no: 6,
-    type: 'M',
-    topic: '',
-    question: 'In Dynamic NAT, which command is used to define the traffic that should be translated?',
-    choices: {
-      a: 'The R1(config)# ip nat inside source ... command.',
-      b: 'The R1(config)# access-list ... command.',
-      c: 'The R1(config)# ip nat pool ... command',
-      d: 'The R1(config-if)# ip nat inside command'
-    },
-    answer: 'b',
-    explanation: 'The access-list command is used to define which traffic should be translated in Dynamic NAT.'
-  },
-  {
-    no: 7,
-    type: 'M',
-    topic: '',
-    question: 'Which of the following commands will not result in an interface being disabled, but will generate Syslog messages when a violation occurs?',
-    choices: {
-      a: 'switchport port-security violation shutdown',
-      b: 'switchport port-security violation protect',
-      c: 'switchport port-security violation restrict',
-      d: 'switchport port-security violation log'
-    },
-    answer: 'c',
-    explanation: 'The restrict option generates Syslog messages on violations while keeping the interface enabled.'
-  },
-  {
-    no: 8,
-    type: 'M',
-    topic: '',
-    question: 'Which of the following commands will configure a host route? (select all correct answers)',
-    choices: {
-      a: 'ip route 192.168.1.128 255.255.255.128 10.0.0.1',
-      b: 'ip route 192.168.1.1 255.255.255.255 172.16.2.1 150',
-      c: 'ip route 203.0.113.127 255.255.255.255 172.16.2.1',
-      d: 'ip route 0.0.0.0 0.0.0.0 10.0.0.1'
-    },
-    answer: ['b', 'c'],
-    explanation: 'Host routes are configured with a subnet mask of 255.255.255.255 (/32).'
-  },
-  {
-    no: 9,
-    type: 'M',
-    topic: '',
-    question: 'Which of the following statements about traditional networks and controller-based networking are true? (select two)',
-    choices: {
-      a: 'Controller-based networking separates the data plane and the control plane.',
-      b: 'Controller-based networking eliminates human error.',
-      c: 'Traditional networking centralizes the control plane.',
-      d: 'Only controller-based networking uses tunnels.',
-      e: 'Only controller-based networking centrally monitors events in the network.',
-      f: 'Traditional networks use a distributed control plane.'
-    },
-    answer: ['a', 'f'],
-    explanation: 'Controller-based networking separates control and data planes, while traditional networks use a distributed control plane architecture.'
-  },
-  {
-    no: 10,
-    type: 'MWI',
-    topic: '',
-    question: {
-      image: '../images/CCNA/Question_10.png',
-      question: 'Examine the network diagram below. All switches are running Rapid PVST+.<br><br>Which of the following statements are true? (select three)'
-    },
-    choices: {
-      a: "The role of SW3's F0/1 interface is 'Root'.",
-      b: "The link type of the connection between SW3 G0/1 and SW4 G0/2 is 'point-to-point'.",
-      c: "The role of SW2's G0/3 interface is 'Alternate'.",
-      d: "The role of SW3's G0/2 interface is 'Root'.",
-      e: "The role of SW4's G0/2 interface is 'Alternate'.",
-      f: "The role of SW1's G0/2 interface is 'Alternate'."
-    },
-    answer: ['b', 'c', 'd'],
-    explanation: 'The correct interface roles and link types are determined by the Rapid PVST+ protocol configuration and topology.'
-  },
-  {
-    no: examtopics.com_question_1,
-    type: 'MWI',
-    topic: '',
-    question: {
-      image: '../images/CCNA/.png',
-      question: ''
-    },
-    choices: {
-      a: '',
-      b: '',
-      c: '',
-      d: '',
-      e: '',
-    },
-    answer: ['b', 'c', 'd'],
-    explanation: ''
-  }
-];
-*/
+    // Create the main <ul> for topics
+    const ulMain = document.createElement('ul');
+    ulMain.style.listStyle = "none";
+    ulMain.style.padding = "0";
+    ulMain.style.margin = "0";
+
+    // Get selected topic from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectedTopic = urlParams.get('topic');
+
+    // Render topics
+    Object.entries(mainTopics).forEach(([mainKey, mainObj]) => {
+        // Main topic <li>
+        const li = document.createElement('li');
+        li.className = "mb-1";
+        li.id = 'topic-' + mainKey; // Set ID for the main topic
+        li.style.cursor = "pointer"; // Make it clickable
+
+        // Main topic <a>
+        const a = document.createElement('a');
+        a.href = `../practiceExam/exam.html?exam=ccna_200_301&page=1&topic=${mainKey}`;
+        a.className = "flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 justify-between";
+        a.innerHTML = `
+            <div class="w-6 h-6 flex items-center justify-center">
+                <i class="ri-folder-3-line"></i>
+            </div>
+            <span class="ml-3 sidebar-text flex-1 text-justify">${mainObj.label}</span>
+            ${mainObj.children.length > 0 ? '<i class="ri-arrow-down-s-line ml-auto"></i>' : ''}
+        `;
+
+        // If has children, add dropdown <ul>
+        let ul = null;
+        if (mainObj.children.length > 0) {
+            ul = document.createElement('ul');
+            ul.className = "ml-8 mt-1";
+            ul.style.listStyle = "none";
+            ul.style.padding = "0";
+            ul.style.margin = "0";
+
+            // Insert "All {Main topic}" as the first child
+            const allLi = document.createElement('li');
+            allLi.className = "mb-1";
+            const allA = document.createElement('a');
+            allA.href = `../practiceExam/exam.html?exam=ccna_200_301&page=1&topic=${mainKey}`;
+            allA.className = "flex items-center px-4 py-2 text-gray-700 hover:bg-primary/10 font-semibold";
+            allA.innerHTML = `
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="ri-list-unordered"></i>
+                </div>
+                <span class="ml-3 sidebar-text">All ${mainObj.label}</span>
+            `;
+            allLi.appendChild(allA);
+            ul.appendChild(allLi);
+
+            mainObj.children.forEach(child => {
+                const childLi = document.createElement('li');
+                childLi.className = "mb-1";
+                const childA = document.createElement('a');
+                childA.href = `../practiceExam/exam.html?page=1&exam=ccna_200_301&topic=${child.key}`;
+                childA.className = "flex items-center px-4 py-2 text-gray-700 hover:bg-primary/10";
+                childA.innerHTML = `
+                    <div class="w-6 h-6 flex items-center justify-center">
+                        <i class="ri-arrow-right-s-line"></i>
+                    </div>
+                    <span class="ml-3 sidebar-text">${child.label}</span>
+                `;
+
+                childLi.appendChild(childA);
+                ul.appendChild(childLi);
+            });
+
+            // Toggle dropdown on main topic click
+            a.style.cursor = "pointer";
+            a.onclick = (e) => {
+                e.preventDefault();
+                ul.classList.toggle("hidden");
+                const arrow = a.querySelector('.ri-arrow-down-s-line');
+                if (arrow) arrow.classList.toggle('rotate-180');
+            };
+
+            ul.classList.add('hidden');
+            li.appendChild(ul);
+        }
+
+        // After all links are created, do the highlight logic:
+        // Remove all highlight classes first
+        a.classList.remove('bg-primary', 'text-white', 'bg-indigo-50', 'text-primary', 'rounded-r-lg');
+        if (ul) {
+            ul.querySelectorAll('a').forEach(link => {
+                link.classList.remove('bg-primary', 'text-white', 'bg-indigo-50', 'text-primary', 'rounded-r-lg');
+            });
+        }
+
+        // Highlight logic
+        if (selectedTopic === String(mainKey)) {
+            // "All {Main topic}" selected: highlight main topic and "All {Main topic}" only
+            a.classList.add('bg-indigo-50', 'text-primary', 'rounded-r-lg');
+            if (ul) {
+                ul.classList.remove('hidden');
+                ul.querySelectorAll('a').forEach(link => {
+                    const url = new URL(link.href, window.location.origin);
+                    const topicParam = url.searchParams.get('topic');
+                    if (topicParam === selectedTopic) {
+                        link.classList.add('bg-indigo-50', 'text-primary', 'rounded-r-lg');
+                        console.log('Highlighting main topic:', topicParam, selectedTopic);
+                    } else {
+                        link.classList.remove('bg-indigo-50', 'text-primary', 'rounded-r-lg');
+                        console.log('Removing highlight from:', topicParam, selectedTopic);
+                    }
+                });
+            }
+        } else if (mainObj.children.some(child => child.key === selectedTopic)) {
+            // Subtopic selected: highlight main topic and subtopic only
+            a.classList.add('bg-indigo-50', 'text-primary', 'rounded-r-lg');
+            if (ul) {
+                ul.classList.remove('hidden');
+                ul.querySelectorAll('a').forEach(link => {
+                    const url = new URL(link.href, window.location.origin);
+                    const topicParam = url.searchParams.get('topic');
+                    if (topicParam === selectedTopic) {
+                        link.classList.add('bg-indigo-50', 'text-primary', 'rounded-r-lg');
+                    } else {
+                        link.classList.remove('bg-indigo-50', 'text-primary', 'rounded-r-lg');
+                    }
+                });
+            }
+        }
+
+        // Insert the main topic into the sidebar
+        li.appendChild(a);
+        if (ul) li.appendChild(ul);
+        ulMain.appendChild(li);
+    });
+
+    // Practice Quiz Button
+    const quizLi = document.createElement('li');
+    quizLi.className = "mt-4";
+    const quizA = document.createElement('a');
+    quizA.href = "../practiceExam/practiceQuiz.html?page=1&subject=ccna_200_301&topic=";
+    quizA.className = "flex items-center px-4 py-2 text-white font-semibold bg-primary hover:bg-secondary shadow transition";
+    quizA.innerHTML = `
+        <div class="w-6 h-6 flex items-center justify-center">
+            <i class="ri-flashlight-line"></i>
+        </div>
+        <span class="ml-3 sidebar-text">PRACTICE QUIZ (FLASHCARD)</span>
+    `;
+    quizLi.appendChild(quizA);
+    ulMain.appendChild(quizLi);
+
+    // Insert the custom <ul> into the sidebar container
+    sideBarContainer.appendChild(ulMain);
+}
 
 var questions = [
   {
@@ -294,13 +269,13 @@ var questions = [
     answer: ['d'],
     explanation: 'Southbound APIs are used for communication between controllers and network devices.'
   },
-    {
+  {
     no: "examtopic_Q16",
     type: 'MWI',
     topic: '',
     question: [
-      {question: 'Refer to the exhibit. Which statement explains the configuration error message that is received?'},
-      {image: '../images/CCNA/exam_topic_Q16.png'}
+      { question: 'Refer to the exhibit. Which statement explains the configuration error message that is received?' },
+      { image: '../images/CCNA/exam_topic_Q16.png' }
     ],
     choices: {
       a: 'It belongs to a private IP address range.',
@@ -311,24 +286,6 @@ var questions = [
     answer: 'd',
     explanation: 'The error message is received because the IP address being configured is the broadcast address for that subnet, which cannot be assigned to an interface.'
   },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  //-----------------------------------------------------
   {
     no: 1,
     type: 'M',
@@ -343,27 +300,6 @@ var questions = [
     },
     answer: ['b', 'd'],
     explanation: 'A switch floods frames with destination MAC FF:FF:FF:FF:FF:FF (broadcast) and frames destined for a host with no entry in the CAM table.'
-  },
-
-  {
-    no: 3,
-    type: 'MWI',
-    topic: '',
-    question: [
-      { question: 'Download the attached .pkt file and open it in Packet Tracer (version 8.2.0 or above required to open the file).<br><br>Which of the following statements are true? (select three)' },
-      { image: '../images/CCNA/Question_3.png' },
-      { question: 'Which of the following statements are true? (select three)' }
-    ],
-    choices: {
-      a: "R4's G0/1 interface has an IP address of 10.0.0.2.",
-      b: "R3's G0/1 interface is connected to R4's G0/2 interface.",
-      c: "R5's G0/3/0 interface is connected to R3's G0/2/0 interface.",
-      d: "SW1's G0/2 interface is connected to R2's G0/1 interface.",
-      e: "R5's G0/1/0 interface is connected to R4's G0/0/0 interface.",
-      f: "R5's G0/2/0 interface has an IP address of 203.0.113.1."
-    },
-    answer: ['a', 'd', 'e'],
-    explanation: 'The correct answers are based on the Packet Tracer topology and interface assignments.'
   },
   {
     no: 4,
@@ -381,25 +317,6 @@ var questions = [
     explanation: 'All listed routes will be added to the routing table as they are the most specific or valid for their respective prefixes.'
   },
   {
-    no: 5,
-    type: 'MWI',
-    topic: '',
-    question: [
-      { question: 'Examine the below JSON-formatted data.' },
-      { image: '../images/CCNA/Question_5.png' },
-      { question: 'Which of the following statements is true?' }
-    ],
-    choices: {
-      a: 'A curly bracket is missing.',
-      b: 'A square bracket is missing.',
-      c: 'It is valid JSON data.',
-      d: 'The value of "version" is a string.'
-    },
-    answer: 'a',
-    explanation: 'A curly bracket is missing in the provided JSON data.'
-  },
-
-  {
     no: 7,
     type: 'M',
     topic: '',
@@ -412,20 +329,6 @@ var questions = [
     },
     answer: 'c',
     explanation: 'The restrict option generates Syslog messages on violations while keeping the interface enabled.'
-  },
-  {
-    no: 8,
-    type: 'M',
-    topic: '',
-    question: 'Which of the following commands will configure a host route? (select all correct answers)',
-    choices: {
-      a: 'ip route 192.168.1.128 255.255.255.128 10.0.0.1',
-      b: 'ip route 192.168.1.1 255.255.255.255 172.16.2.1 150',
-      c: 'ip route 203.0.113.127 255.255.255.255 172.16.2.1',
-      d: 'ip route 0.0.0.0 0.0.0.0 10.0.0.1'
-    },
-    answer: ['b', 'c'],
-    explanation: 'Host routes are configured with a subnet mask of 255.255.255.255 (/32).'
   },
   {
     no: 9,
@@ -444,24 +347,106 @@ var questions = [
     explanation: 'Controller-based networking separates control and data planes, while traditional networks use a distributed control plane architecture.'
   },
   {
-    no: 10,
-    type: 'MWI',
+    no: 20,
+    type: 'M',
     topic: '',
-    question: [
-      { question: 'Examine the network diagram below. All switches are running Rapid PVST+.' },
-      { image: '../images/CCNA/Question_10.png' },
-      { question: 'Which of the following statements are true? (select three)' }
-    ],
+    question: 'In a traditional three-tier campus LAN design, which of the following features would you expect to find in the Access Layer? (select three)',
     choices: {
-      a: "The role of SW3's F0/1 interface is 'Root'.",
-      b: "The link type of the connection between SW3 G0/1 and SW4 G0/2 is 'point-to-point'.",
-      c: "The role of SW2's G0/3 interface is 'Alternate'.",
-      d: "The role of SW3's G0/2 interface is 'Root'.",
-      e: "The role of SW4's G0/2 interface is 'Alternate'.",
-      f: "The role of SW1's G0/2 interface is 'Alternate'."
+      a: 'WAN connection',
+      b: 'QoS Marking',
+      c: 'Border between L2 and L3',
+      d: 'Internet connection',
+      e: 'Port Security',
+      f: 'PoE'
     },
-    answer: ['b', 'c', 'd'],
-    explanation: 'The correct interface roles and link types are determined by the Rapid PVST+ protocol configuration and topology.'
+    answer: ['b', 'e'],
+    explanation: 'QoS Marking, Port Security, and PoE are features commonly found in the Access Layer of a three-tier campus LAN design.'
+  },
+  {
+    no: 4,
+    type: 'M',
+    topic: '',
+    question: 'Which of the following WAP types is not suitable for large networks?',
+    choices: {
+      a: 'Autonomous',
+      b: 'Lightweight',
+      c: 'Cloud-based',
+      d: 'Meraki'
+    },
+    answer: 'a',
+    explanation: 'Autonomous access points are managed individually, making them impractical for large networks where centralized management is preferred.'
+  },
+  {
+    no: 25,
+    type: 'M',
+    topic: '',
+    question: 'Which of the following Application Layer protocols use TCP to provide reliable communications? (select three)',
+    choices: {
+      a: 'FTP',
+      b: 'HTTPS',
+      c: 'Telnet',
+      d: 'TFTP',
+      e: 'DHCP',
+      f: 'Syslog'
+    },
+    answer: ['a', 'b', 'c'],
+    explanation: 'FTP, HTTPS, and Telnet use TCP for reliable communications.'
+  },
+  {
+    no: 102,
+    type: 'M',
+    topic: '',
+    question: 'Which of the following statements about speed and duplex mismatches are true? (select two)',
+    choices: {
+      a: 'A speed mismatch will cause the interface to go down.',
+      b: 'A duplex mismatch will cause the interface to go down.',
+      c: 'A duplex mismatch will cause the collision counter to increment.',
+      d: 'A speed mismatch will cause the collision counter to increment.'
+    },
+    answer: ['a', 'c'],
+    explanation: 'A duplex mismatch will cause the collision counter to increment, and a speed mismatch will also cause the collision counter to increment.'
+  },
+  {
+    no: 2,
+    type: 'M',
+    topic: '',
+    question: 'What is the correct order of Syslog severity levels, from least to most severe?',
+    choices: {
+      a: 'Debugging, Notice, Informational, Warning, Error, Critical, Alert, Emergency',
+      b: 'Debugging, Informational, Notice, Warning, Error, Critical, Alert, Emergency',
+      c: 'Debugging, Informational, Warning, Notice, Error, Critical, Emergency, Alert',
+      d: 'Debugging, Informational, Notice, Warning, Critical, Error, Alert, Emergency'
+    },
+    answer: 'b',
+    explanation: 'The correct Syslog severity order is: Debugging (7), Informational (6), Notice (5), Warning (4), Error (3), Critical (2), Alert (1), Emergency (0).'
+  },
+  {
+    no: 7,
+    type: 'M',
+    topic: '',
+    question: 'Which type of VPN allows a user to securely connect to the corporate network while in an unsecure network, such as an airport?',
+    choices: {
+      a: 'GRE',
+      b: 'Site-to-Site',
+      c: 'Remote Access',
+      d: 'MPLS VPN'
+    },
+    answer: 'c',
+    explanation: 'Remote Access VPNs allow individual users to securely connect to a corporate network from remote or untrusted locations.'
+  },
+  {
+    no: 108,
+    type: 'M',
+    topic: '',
+    question: 'How can network automation help to reduce OpEx?',
+    choices: {
+      a: 'Automation increases efficiency, requiring less network hardware.',
+      b: 'Generating device configurations requires fewer man-hours.',
+      c: 'Virtualized devices reduce hardware requirements.',
+      d: 'Manual network design is not required.'
+    },
+    answer: ['b'],
+    explanation: 'Automation reduces OpEx by reducing the man-hours required to generate device configurations.'
   },
   {
     no: 11,
@@ -476,6 +461,313 @@ var questions = [
     answer: ['b'],
     explanation: 'IaaS (Infrastructure as a Service) provides the most control to the customer over the infrastructure.'
   },
+  {
+    no: 1,
+    type: 'M',
+    topic: '',
+    question: 'Which OSPF message type is used to send LSAs?',
+    choices: {
+      a: 'LSP',
+      b: 'DBD',
+      c: 'LSR',
+      d: 'LSU'
+    },
+    answer: 'd',
+    explanation: 'LSUs (Link State Update) are used by OSPF to send LSAs (Link State Advertisements) to other routers.'
+  },
+  {
+    no: 139,
+    type: 'M',
+    topic: '',
+    question: 'You issue the following command on R1:<br><br><code>R1(config)# ipv6 route 2001:db8::/64 fe80::68a7:93ff:fe07:db9a</code><br><br>Which of the following statements are true? (select two)',
+    choices: {
+      a: 'The command will be rejected.',
+      b: 'It is a host route.',
+      c: 'It is a network route.',
+      d: 'It is a directly-connected route.',
+      e: 'It is a fully-specified route.',
+      f: 'It is a route to a link-local network.'
+    },
+    answer: ['c', 'a'],
+    explanation: 'It is a network route, but the command will be rejected because the next hop is a link-local address and the outgoing interface is not specified.'
+  },
+  {
+    no: 115,
+    type: 'M',
+    topic: '',
+    question: 'Which of the following configuration management tools is written in Go?',
+    choices: {
+      a: 'Chef',
+      b: 'Puppet',
+      c: 'Ansible',
+      d: 'Terraform'
+    },
+    answer: ['d'],
+    explanation: 'Terraform is written in Go.'
+  },
+  {
+    no: 5,
+    type: 'M',
+    topic: '',
+    question: 'What is a benefit of using a Cisco Wireless LAN Controller?',
+    choices: {
+      a: 'It eliminates the need to configure each access point individually.',
+      b: 'Central AP management requires more complex configurations.',
+      c: 'Unique SSIDs cannot use the same authentication method.',
+      d: 'It supports autonomous and lightweight APs.'
+    },
+    answer: 'a',
+    explanation: 'A WLC allows centralized configuration, eliminating the need to configure each AP individually.'
+  },
+  {
+    no: 82,
+    type: 'M',
+    topic: '',
+    question: 'Which of these commands can be used to make a FastEthernet interface have an OSPF cost of 1000?',
+    choices: {
+      a: 'R1(config-router)# auto-cost reference-bandwidth 1000',
+      b: 'R1(config-router)# auto-cost reference-bandwidth 10000',
+      c: 'R1(config-router)# auto-cost reference-bandwidth 100000',
+      d: 'R1(config-router)# auto-cost reference-bandwidth 1000000'
+    },
+    answer: ['c'],
+    explanation: 'Setting the reference bandwidth to 100000 makes a FastEthernet interface (100 Mbps) have a cost of 1000.'
+  },
+  {
+    no: 7,
+    type: 'M',
+    topic: '',
+    question: 'Which function does the range of private IPv4 addresses perform?',
+    choices: {
+      a: 'allows multiple companies to each use the same addresses without conflicts',
+      b: 'provides a direct connection for hosts from outside of the enterprise network',
+      c: 'ensures that NAT is not required to reach the Internet with private range addressing',
+      d: 'enables secure communications to the Internet for all external hosts'
+    },
+    answer: 'a',
+    explanation: 'Private IPv4 address ranges allow multiple organizations to use the same addresses internally without conflict.'
+  },
+  {
+    no: 127,
+    type: 'M',
+    topic: '',
+    question: 'Which of the following are constraints of REST APIs? (select three)',
+    choices: {
+      a: 'Client-Server',
+      b: 'Stateless',
+      c: 'Flat system',
+      d: 'Stateful',
+      e: 'Peer-to-Peer',
+      f: 'Layered system'
+    },
+    answer: ['a', 'b', 'f'],
+    explanation: 'REST APIs are client-server, stateless, and layered.'
+  },
+  {
+    no: 3,
+    type: 'M',
+    topic: '',
+    question: 'What identifies the functionality of virtual machines?',
+    choices: {
+      a: 'The hypervisor communicates on Layer 3 without the need for additional resources.',
+      b: 'Each hypervisor supports a single virtual machine and a single software switch.',
+      c: 'The hypervisor virtualizes physical components including CPU, memory, and storage.',
+      d: 'Virtualized servers run efficiently when physically connected to a switch that is separate from the hypervisor.'
+    },
+    answer: 'c',
+    explanation: 'A hypervisor virtualizes physical components such as CPU, memory, and storage for virtual machines.'
+  },
+  {
+    no: 1,
+    type: 'M',
+    topic: '',
+    question: 'A frame that enters a switch fails the Frame Check Sequence. Which two interface counters are incremented? (Choose two.)',
+    choices: {
+      a: 'Input errors',
+      b: 'Frame',
+      c: 'Giants',
+      d: 'CRC',
+      e: 'Runts'
+    },
+    answer: ['a', 'd'],
+    explanation: 'When a frame fails the Frame Check Sequence (FCS), the "Input errors" and "CRC" counters are incremented on the switch interface.'
+  },
+  {
+    no: 134,
+    type: 'M',
+    topic: '',
+    question: 'Which IPv6 address type is automatically configured on an interface when the <code>ipv6 enable</code> command is used?',
+    choices: {
+      a: 'EUI-64',
+      b: 'Global Unicast',
+      c: 'Unique Local',
+      d: 'Link Local'
+    },
+    answer: ['d'],
+    explanation: 'The Link Local address is automatically configured when <code>ipv6 enable</code> is used.'
+  },
+  {
+    no: 3,
+    type: 'M',
+    topic: '',
+    question: 'R1 learns the following routes to the same destination network. Which route will R1 select to install in its routing table?',
+    choices: {
+      a: 'Static route, AD 111',
+      b: 'OSPF route, metric 10',
+      c: 'OSPF route, metric 20',
+      d: 'RIP route, metric 5'
+    },
+    answer: 'b',
+    explanation: 'R1 will select the OSPF route with the lowest metric (10), since OSPF has a lower administrative distance (110) than RIP (120) and the static route has a higher AD (111).'
+  },
+  {
+    no: 118,
+    type: 'M',
+    topic: '',
+    question: 'Which of the following AP modes offers one or more BSS\'s for clients? (select two)',
+    choices: {
+      a: 'FlexConnect',
+      b: 'Monitor',
+      c: 'SE-Connect',
+      d: 'Local'
+    },
+    answer: ['a', 'd'],
+    explanation: 'FlexConnect and Local modes offer BSSs for clients.'
+  },
+  {
+    no: 6,
+    type: 'M',
+    topic: '',
+    question: 'Which action is taken by switch port enabled for PoE power classification override?',
+    choices: {
+      a: 'If a monitored port exceeds the maximum administrative value for power, the port is shutdown and err-disabled.',
+      b: 'When a powered device begins drawing power from a PoE switch port, a syslog message is generated.',
+      c: 'As power usage on a PoE switch port is checked, data flow to the connected device is temporarily paused.',
+      d: 'If a switch determines that a device is using less than the minimum configured power, it assumes the device has failed and disconnects it.'
+    },
+    answer: 'a',
+    explanation: 'If a monitored port exceeds the maximum administrative value for power, the port is shutdown and err-disabled.'
+  },
+  {
+    no: 6,
+    type: 'M',
+    topic: '',
+    question: 'What is the default Port Security violation mode?',
+    choices: {
+      a: 'Ignore',
+      b: 'Protect',
+      c: 'Shutdown',
+      d: 'Restrict'
+    },
+    answer: 'c',
+    explanation: 'The default violation mode for Port Security is "shutdown", which disables the port if a violation occurs.'
+  },
+  {
+    no: 8,
+    type: 'M',
+    topic: '',
+    question: 'How does CAPWAP communicate between an access point in local mode and a WLC?',
+    choices: {
+      a: 'The access point must not be connected to the wired network, as it would create a loop',
+      b: 'The access point must be connected to the same switch as the WLC',
+      c: 'The access point must directly connect to the WLC using a copper cable',
+      d: 'The access point has the ability to link to any switch in the network, assuming connectivity to the WLC'
+    },
+    answer: 'd',
+    explanation: 'A CAPWAP access point in local mode can connect through any switch in the network, as long as it can reach the WLC.'
+  },
+  {
+    no: 5,
+    type: 'M',
+    topic: '',
+    question: 'Which feature should be enabled in combination with PortFast, to disable a port if it receives STP BPDUs?',
+    choices: {
+      a: 'BPDU Filter',
+      b: 'BPDU Guard',
+      c: 'Root Guard',
+      d: 'Loop Guard'
+    },
+    answer: 'b',
+    explanation: 'BPDU Guard disables a PortFast-enabled port if it receives a BPDU, protecting the network from loops.'
+  },
+  {
+    no: 90,
+    type: 'M',
+    topic: '',
+    question: 'Examine the following JSON-formatted data:<br>{"device": {"name": "R1","vendor": "Cisco","model": "1101"},"interface_config": {"interface_name": "GigabitEthernet1/1","is_up": "true","ipaddress": "192.168.1.1","netmask": "255.255.255.0","speed": 1000}}<br>Which of the following statements are true? (select three)',
+    choices: {
+      a: 'The value of "is_up" is a boolean.',
+      b: 'The value of "device" is an object.',
+      c: 'The whitespace formatting is invalid.',
+      d: 'There is one unneeded curly bracket.',
+      e: 'The value of "model" is a string.',
+      f: 'There are two nested objects.'
+    },
+    answer: ['b', 'e', 'f'],
+    explanation: '"device" is an object, "model" is a string, and there are two nested objects in the JSON.'
+  },
+  {
+    no: 4,
+    type: 'M',
+    topic: '',
+    question: 'Which IPv6 address type provides communication between subnets and cannot route on the Internet?',
+    choices: {
+      a: 'Link-local',
+      b: 'Unique local',
+      c: 'Multicast',
+      d: 'Global unicast'
+    },
+    answer: 'b',
+    explanation: 'Unique local addresses provide communication between subnets but are not routable on the Internet.'
+  },
+  {
+    no: 136,
+    type: 'M',
+    topic: '',
+    question: 'Which layer of the SDN Architecture contains the fabric?',
+    choices: {
+      a: 'Application',
+      b: 'Control',
+      c: 'Infrastructure',
+      d: 'Access'
+    },
+    answer: ['c'],
+    explanation: 'The Infrastructure layer contains the fabric in SDN architecture.'
+  },
+  {
+    no: 2,
+    type: 'M',
+    topic: '',
+    question: 'Which 802.11 frame type is Association Response?',
+    choices: {
+      a: 'Management',
+      b: 'Protected frame',
+      c: 'Action',
+      d: 'Control'
+    },
+    answer: 'a',
+    explanation: 'Association Response is a management frame in the 802.11 standard.'
+  },
+
+
+
+
+    {
+    no: 2,
+    type: 'M',
+    topic: '',
+    question: 'END END END END END END END END',
+    choices: {
+      a: 'Management',
+      b: 'Protected frame',
+      c: 'Action',
+      d: 'Control'
+    },
+    answer: 'a',
+    explanation: 'Association Response is a management frame in the 802.11 standard.'
+  },
+  //-----------------------------------------------------
+
   {
     no: 12,
     type: 'M',
@@ -584,22 +876,7 @@ var questions = [
     answer: ['c'],
     explanation: 'SAE (Simultaneous Authentication of Equals) is a WPA3 feature that provides superior security over WPA2.'
   },
-  {
-    no: 20,
-    type: 'M',
-    topic: '',
-    question: 'In a traditional three-tier campus LAN design, which of the following features would you expect to find in the Access Layer? (select three)',
-    choices: {
-      a: 'WAN connection',
-      b: 'QoS Marking',
-      c: 'Border between L2 and L3',
-      d: 'Internet connection',
-      e: 'Port Security',
-      f: 'PoE'
-    },
-    answer: ['b', 'e'],
-    explanation: 'QoS Marking, Port Security, and PoE are features commonly found in the Access Layer of a three-tier campus LAN design.'
-  },
+
   {
     no: 21,
     type: 'M',
@@ -647,22 +924,7 @@ var questions = [
     answer: ['a', 'd', 'f'],
     explanation: 'Area number, Hello and Dead timers, and Subnet must match for OSPF neighbors to form.'
   },
-  {
-    no: 25,
-    type: 'M',
-    topic: '',
-    question: 'Which of the following Application Layer protocols use TCP to provide reliable communications? (select three)',
-    choices: {
-      a: 'FTP',
-      b: 'HTTPS',
-      c: 'Telnet',
-      d: 'TFTP',
-      e: 'DHCP',
-      f: 'Syslog'
-    },
-    answer: ['a', 'b', 'c'],
-    explanation: 'FTP, HTTPS, and Telnet use TCP for reliable communications.'
-  },
+
   {
     no: 26,
     type: 'M',
@@ -1507,20 +1769,7 @@ var questions = [
     answer: ['b', 'c'],
     explanation: 'Setting the reference bandwidth to 100000 makes a FastEthernet interface (100 Mbps) have a cost of 1000.'
   },
-  {
-    no: 82,
-    type: 'M',
-    topic: '',
-    question: 'Which of these commands can be used to make a FastEthernet interface have an OSPF cost of 1000?',
-    choices: {
-      a: 'R1(config-router)# auto-cost reference-bandwidth 1000',
-      b: 'R1(config-router)# auto-cost reference-bandwidth 10000',
-      c: 'R1(config-router)# auto-cost reference-bandwidth 100000',
-      d: 'R1(config-router)# auto-cost reference-bandwidth 1000000'
-    },
-    answer: ['c'],
-    explanation: 'Setting the reference bandwidth to 100000 makes a FastEthernet interface (100 Mbps) have a cost of 1000.'
-  },
+
   {
     no: 83,
     type: 'M',
@@ -1641,22 +1890,7 @@ var questions = [
     answer: ['c'],
     explanation: 'The most specific (longest prefix match) is /78, option C.'
   },
-  {
-    no: 90,
-    type: 'M',
-    topic: '',
-    question: 'Examine the following JSON-formatted data:<br>{"device": {"name": "R1","vendor": "Cisco","model": "1101"},"interface_config": {"interface_name": "GigabitEthernet1/1","is_up": "true","ipaddress": "192.168.1.1","netmask": "255.255.255.0","speed": 1000}}<br>Which of the following statements are true? (select three)',
-    choices: {
-      a: 'The value of "is_up" is a boolean.',
-      b: 'The value of "device" is an object.',
-      c: 'The whitespace formatting is invalid.',
-      d: 'There is one unneeded curly bracket.',
-      e: 'The value of "model" is a string.',
-      f: 'There are two nested objects.'
-    },
-    answer: ['b', 'e', 'f'],
-    explanation: '"device" is an object, "model" is a string, and there are two nested objects in the JSON.'
-  },
+
   {
     no: 90,
     type: 'M',
@@ -1805,20 +2039,7 @@ var questions = [
     answer: ['c', 'd'],
     explanation: 'A VTP transparent switch will forward VTP advertisements, and only VTPv3 supports extended VLANs.'
   },
-  {
-    no: 102,
-    type: 'M',
-    topic: '',
-    question: 'Which of the following statements about speed and duplex mismatches are true? (select two)',
-    choices: {
-      a: 'A speed mismatch will cause the interface to go down.',
-      b: 'A duplex mismatch will cause the interface to go down.',
-      c: 'A duplex mismatch will cause the collision counter to increment.',
-      d: 'A speed mismatch will cause the collision counter to increment.'
-    },
-    answer: ['a', 'c'],
-    explanation: 'A duplex mismatch will cause the collision counter to increment, and a speed mismatch will also cause the collision counter to increment.'
-  },
+
   {
     no: 103,
     type: 'M',
@@ -1894,20 +2115,7 @@ var questions = [
     answer: ['b', 'd', 'e'],
     explanation: 'TCP provides data sequencing, error recovery, and flow control, which UDP does not.'
   },
-  {
-    no: 108,
-    type: 'M',
-    topic: '',
-    question: 'How can network automation help to reduce OpEx?',
-    choices: {
-      a: 'Automation increases efficiency, requiring less network hardware.',
-      b: 'Generating device configurations requires fewer man-hours.',
-      c: 'Virtualized devices reduce hardware requirements.',
-      d: 'Manual network design is not required.'
-    },
-    answer: ['b'],
-    explanation: 'Automation reduces OpEx by reducing the man-hours required to generate device configurations.'
-  },
+
   {
     no: 109,
     type: 'MWI',
@@ -2006,20 +2214,7 @@ var questions = [
     answer: ['a', 'c'],
     explanation: "R1's G0/3 is connected to R2's G0/4, and R2's IP address is 192.168.12.2."
   },
-  {
-    no: 115,
-    type: 'M',
-    topic: '',
-    question: 'Which of the following configuration management tools is written in Go?',
-    choices: {
-      a: 'Chef',
-      b: 'Puppet',
-      c: 'Ansible',
-      d: 'Terraform'
-    },
-    answer: ['d'],
-    explanation: 'Terraform is written in Go.'
-  },
+
   {
     no: 116,
     type: 'M',
@@ -2048,20 +2243,7 @@ var questions = [
     answer: ['b', 'd'],
     explanation: 'Cat 5e supports up to 1 Gbps and a maximum length of 100 meters.'
   },
-  {
-    no: 118,
-    type: 'M',
-    topic: '',
-    question: 'Which of the following AP modes offers one or more BSS\'s for clients? (select two)',
-    choices: {
-      a: 'FlexConnect',
-      b: 'Monitor',
-      c: 'SE-Connect',
-      d: 'Local'
-    },
-    answer: ['a', 'd'],
-    explanation: 'FlexConnect and Local modes offer BSSs for clients.'
-  },
+
   {
     no: 119,
     type: 'MWI',
@@ -2180,22 +2362,7 @@ var questions = [
     answer: ['b'],
     explanation: 'The correct EUI-64 address is 2001:db8:0:1:942f:6dff:fe8a:8e27.'
   },
-  {
-    no: 127,
-    type: 'M',
-    topic: '',
-    question: 'Which of the following are constraints of REST APIs? (select three)',
-    choices: {
-      a: 'Client-Server',
-      b: 'Stateless',
-      c: 'Flat system',
-      d: 'Stateful',
-      e: 'Peer-to-Peer',
-      f: 'Layered system'
-    },
-    answer: ['a', 'b', 'f'],
-    explanation: 'REST APIs are client-server, stateless, and layered.'
-  },
+
   {
     no: 128,
     type: 'M',
@@ -2295,20 +2462,7 @@ var questions = [
     answer: ['b'],
     explanation: 'The wildcard mask 0.15.255.255 covers both interfaces.'
   },
-  {
-    no: 134,
-    type: 'M',
-    topic: '',
-    question: 'Which IPv6 address type is automatically configured on an interface when the <code>ipv6 enable</code> command is used?',
-    choices: {
-      a: 'EUI-64',
-      b: 'Global Unicast',
-      c: 'Unique Local',
-      d: 'Link Local'
-    },
-    answer: ['d'],
-    explanation: 'The Link Local address is automatically configured when <code>ipv6 enable</code> is used.'
-  },
+
   {
     no: 135,
     type: 'M',
@@ -2323,20 +2477,7 @@ var questions = [
     answer: ['c'],
     explanation: 'The switch will automatically create VLAN 10 when the command is issued.'
   },
-  {
-    no: 136,
-    type: 'M',
-    topic: '',
-    question: 'Which layer of the SDN Architecture contains the fabric?',
-    choices: {
-      a: 'Application',
-      b: 'Control',
-      c: 'Infrastructure',
-      d: 'Access'
-    },
-    answer: ['c'],
-    explanation: 'The Infrastructure layer contains the fabric in SDN architecture.'
-  },
+
   {
     no: 137,
     type: 'MWI',
@@ -2371,22 +2512,7 @@ var questions = [
     answer: ['d', 'b'],
     explanation: '172.29.247.255 and 192.168.254.254 are within RFC 1918 private address ranges.'
   },
-  {
-    no: 139,
-    type: 'M',
-    topic: '',
-    question: 'You issue the following command on R1:<br><br><code>R1(config)# ipv6 route 2001:db8::/64 fe80::68a7:93ff:fe07:db9a</code><br><br>Which of the following statements are true? (select two)',
-    choices: {
-      a: 'The command will be rejected.',
-      b: 'It is a host route.',
-      c: 'It is a network route.',
-      d: 'It is a directly-connected route.',
-      e: 'It is a fully-specified route.',
-      f: 'It is a route to a link-local network.'
-    },
-    answer: ['c', 'a'],
-    explanation: 'It is a network route, but the command will be rejected because the next hop is a link-local address and the outgoing interface is not specified.'
-  },
+
   {
     no: 140,
     type: 'M',
@@ -2545,22 +2671,20 @@ var questions = [
   }
 ];
 
-const fileName = window.location.pathname.split("/").pop();
   const topicName = 'Cisco Certified Network Associate (CCNA) 200 - 301';
 
+const fileName = window.location.pathname.split("/").pop();
 if (fileName === 'quiz.html') {
-
-  const script = document.createElement('script');
-  script.src = '../asset/js/newPracticeQuiz.js';
-  document.head.appendChild(script);
-} else if (fileName == 'practiceExam.html') {
-  const script = document.createElement('script');
-  script.src = '../asset/js/quiz.js';
-  document.head.appendChild(script);
+    const script = document.createElement('script');
+    script.src = '../asset/js/newPracticeQuiz.js';
+    document.head.appendChild(script);
+} else if (fileName == 'exam.html') {
+    const script = document.createElement('script');
+    script.src = '../asset/js/quiz.js';
+    document.head.appendChild(script);
 } else {
-  
-  const script = document.createElement('script');
-  script.src = '../asset/js/quizAdmin.js';
-  document.head.appendChild(script);
-  
+    const script = document.createElement('script');
+    script.src = '../asset/js/practiceQuiz.js';
+    document.head.appendChild(script);
 }
+
