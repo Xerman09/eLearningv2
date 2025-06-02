@@ -6,7 +6,7 @@ const practiceExamArray = [
     subjectTitle: "Civil Service Exam",
   },
   {
-    link: ".practiceExam/exam.html?exam=ccna_200_301&topic=0",
+    link: "./practiceExam/exam.html?exam=ccna_200_301&topic=0",
     subjectTitle: "CCNA 200 - 301",
   },
 ];
