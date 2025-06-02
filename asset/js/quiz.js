@@ -204,12 +204,12 @@ function renderQuestion(q, index) {
   header.className = "question-header flex items-center justify-between mb-6";
 
   const questionNo = document.createElement('div');
-  questionNo.className = "questionNo text-2xl font-bold";
+  questionNo.className = "questionNo font-bold";
   questionNo.textContent = `Question ${index + 1}`;
   header.appendChild(questionNo);
 
   const topic = document.createElement('div');
-  topic.className = "topic text-xl font-semibold";
+  topic.className = "topic font-semibold";
   topic.textContent = topics[q.topic] || '';
   header.appendChild(topic);
 
