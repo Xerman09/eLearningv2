@@ -1,0 +1,28 @@
+:root {
+    --shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    --firstcolor: #1A2D42;
+}
+
+.con-with-sh {
+    border: 1px solid var(--firstcolor);
+    box-shadow: var(--shadow);
+}
+
+.con-hover:hover {
+    background: var(--firstcolor);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+.nowrap {
+    display: inline-block; /* Or block if you need block-level */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.lec-subbar{
+    font-size: 0.8rem;
+    border-bottom: 1px solid black;
+}
